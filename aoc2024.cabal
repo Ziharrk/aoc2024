@@ -1,0 +1,78 @@
+cabal-version:      3.4
+name:               aoc2024
+version:            0.1.0.0
+license:            BSD-3-Clause
+license-file:       LICENSE
+author:             Kai-Oliver Prott
+maintainer:         kai.prott@hotmail.de
+build-type:         Simple
+category:           Game
+synopsis:           Advent of Code 2023
+description:        My solutions for the Advent of Code 2023
+
+source-repository head
+    type:     git
+    location: git@github.com:Ziharrk/aoc2023.git
+
+common ghc_options
+    ghc-options: -Wall
+    default-language: GHC2021
+    other-extensions: DeriveAnyClass,
+                      DerivingStrategies,
+                      LambdaCase,
+                      MultiWayIf,
+                      OverloadedRecordDot,
+                      TemplateHaskell,
+                      TypeFamilies,
+    build-depends:    base             ^>= 4.18,
+                      parsec           ^>= 3.1,
+                      text             ^>= 2.1,
+                      extra            ^>= 1.8,
+                      template-haskell ^>= 2.20
+
+library
+    import:           ghc_options
+    exposed-modules:  AllDays,
+                      Tuple,
+                      Day1,
+                      Day2,
+                      Day3,
+                      Day4,
+                      Day5,
+                      Day6,
+                      Day7,
+                      Day8,
+                      Day9,
+                      Day10,
+                      Day11,
+                      Day12,
+                      Day13,
+                      Day14,
+                      Day15,
+                      Day16,
+                      Day17,
+                      Day18,
+                      Day19,
+                      Day20,
+                      Day21,
+                      Day22,
+                      Day23,
+                      Day24,
+                      Day25,
+    hs-source-dirs:   src
+
+executable aoc2023
+    import:           ghc_options
+    ghc-options:      -O2
+    main-is:          Main.hs
+    build-depends:    aoc2024
+    hs-source-dirs:   app
+
+test-suite aoc-test
+    import:           ghc_options
+    type:             exitcode-stdio-1.0
+    ghc-options:      -O2
+    main-is:          Main.hs
+    build-depends:    aoc2024,
+                      time
+    hs-source-dirs:   test
