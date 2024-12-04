@@ -27,7 +27,9 @@ day3 = do
   input <- readFile "input/day3"
   case parse parseMemory "" input of
     Right parsed -> do
+      putStr "Part 1: "
       print $ sum $ map eval parsed
+      putStr "Part 2: "
       print $ sum $ map eval $ execute parsed
     Left err -> putStrLn (displayException err)
 
