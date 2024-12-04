@@ -1,7 +1,6 @@
 module Day4 where
 
 import Data.List (isPrefixOf, transpose)
-import Debug.Trace
 
 searchXMAS :: [[Char]] -> Int
 searchXMAS input = horizontal input + vertical + diagonal1 input + diagonal2
