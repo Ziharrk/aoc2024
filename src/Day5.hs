@@ -20,7 +20,7 @@ reorder rules = map reorderOne
       insertComponent (scc (\e -> Map.findWithDefault [] e rules) return xs) []
     insertComponent []       ys = ys
     insertComponent ([x]:xs) ys = insertComponent xs (x:ys)
-    insertComponent _        _  = error "no greedy solution"
+    insertComponent _        _  = error "no solution at all"
 
 updateValue :: [[Int]] -> Int
 updateValue = sum . map (\xs -> xs !! (length xs `div` 2))
