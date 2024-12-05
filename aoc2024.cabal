@@ -28,12 +28,14 @@ common ghc_options
                       parsec           ^>= 3.1,
                       text             ^>= 2.1,
                       extra            ^>= 1.8,
-                      template-haskell ^>= 2.20
+                      template-haskell ^>= 2.20,
+                      containers       ^>= 0.6
 
 library
     import:           ghc_options
     exposed-modules:  AllDays,
                       Tuple,
+                      Utils,
                       Day1,
                       Day2,
                       Day3,
