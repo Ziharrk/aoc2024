@@ -1,6 +1,11 @@
-module Utils (scc) where
+module Utils (scc, Matrix, setMatrix, getMatrix, findMatrix, parMap) where
 
+import Control.Concurrent (forkIO, newEmptyMVar, readMVar, putMVar, getNumCapabilities)
+import Control.DeepSeq (force, NFData)
 import qualified Data.Set as Set
+import Data.Vector (Vector)
+import qualified Data.Vector as V
+import Data.List.Extra (chunksOf)
 
 -- Adapted from curry-frontend, with code deduplication
 scc :: Eq b => (a -> [b]) -- ^entities defined by node
@@ -27,3 +32,25 @@ instance Eq (Node a b) where
 
 instance Ord (Node b a) where
   n1 `compare` n2 = key n1 `compare` key n2
+
+type Matrix a = Vector (Vector a)
+
+setMatrix :: Matrix a -> a -> Int -> Int -> Matrix a
+setMatrix v a x y = v V.// [(x, (v V.! x) V.// [(y, a)])]
+
+getMatrix :: Matrix a -> Int -> Int -> Maybe a
+getMatrix v x y = (v V.!? x) >>= (V.!? y)
+
+findMatrix :: (a -> Bool) -> Matrix a -> [(Int, Int)]
+findMatrix p = concat . V.toList . V.imap (\i v -> (i,) <$> V.toList (V.findIndices p v))
+
+parMap :: NFData b => (a -> b) -> [a] -> IO [b]
+parMap f xs = do
+  num <- getNumCapabilities
+  vs <- mapM go (chunksOf (length xs `div` num) xs)
+  concat <$> mapM readMVar vs
+  where
+    go x = do
+      v <- newEmptyMVar
+      _ <- forkIO $ putMVar v $! force (map f x)
+      return v
