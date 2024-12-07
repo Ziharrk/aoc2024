@@ -65,7 +65,7 @@ library
 
 executable aoc2023
     import:           ghc_options
-    ghc-options:      -O2
+    ghc-options:      -O2 -threaded -with-rtsopts=-N
     main-is:          Main.hs
     build-depends:    aoc2024
     hs-source-dirs:   app
@@ -73,7 +73,7 @@ executable aoc2023
 test-suite aoc-test
     import:           ghc_options
     type:             exitcode-stdio-1.0
-    ghc-options:      -O2
+    ghc-options:      -O2 -threaded -with-rtsopts=-N
     main-is:          Main.hs
     build-depends:    aoc2024,
                       time
