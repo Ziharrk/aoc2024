@@ -5,7 +5,7 @@ import Control.DeepSeq (force, NFData)
 import qualified Data.Set as Set
 import Data.Vector (Vector)
 import qualified Data.Vector as V
-import Data.List.Extra (chunksOf)
+import Data.List.Extra (chunksOf, tails)
 
 -- Adapted from curry-frontend, with code deduplication
 scc :: Eq b => (a -> [b]) -- ^entities defined by node
