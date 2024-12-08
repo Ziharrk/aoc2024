@@ -1,4 +1,4 @@
-module Utils (scc, Matrix, setMatrix, getMatrix, findMatrix, parMap) where
+module Utils (scc, Matrix, setMatrix, setMatrixSafe, getMatrix, findMatrix, parMap, allPairs) where
 
 import Control.Concurrent (forkIO, newEmptyMVar, readMVar, putMVar, getNumCapabilities)
 import Control.DeepSeq (force, NFData)
@@ -36,7 +36,14 @@ instance Ord (Node b a) where
 type Matrix a = Vector (Vector a)
 
 setMatrix :: Matrix a -> a -> Int -> Int -> Matrix a
-setMatrix v a x y = v V.// [(x, (v V.! x) V.// [(y, a)])]
+setMatrix v a x y = case setMatrixSafe v a x y of 
+  Just m' -> m' 
+  Nothing -> error "Index out of bounds"
+
+setMatrixSafe :: Matrix a -> a -> Int -> Int -> Maybe (Matrix a)
+setMatrixSafe v a x y 
+  | x < 0 || y < 0 || x >= V.length v || y >= V.length (v V.! x) = Nothing
+  | otherwise = Just $ v V.// [(x, (v V.! x) V.// [(y, a)])]
 
 getMatrix :: Matrix a -> Int -> Int -> Maybe a
 getMatrix v x y = (v V.!? x) >>= (V.!? y)
@@ -54,3 +61,6 @@ parMap f xs = do
       v <- newEmptyMVar
       _ <- forkIO $ putMVar v $! force (map f x)
       return v
+
+allPairs :: [b] -> [(b, b)]
+allPairs xs = [(x, y) | (x:ys) <- tails xs, y <- ys]
