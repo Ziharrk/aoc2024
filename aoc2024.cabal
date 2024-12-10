@@ -7,8 +7,8 @@ author:             Kai-Oliver Prott
 maintainer:         kai.prott@hotmail.de
 build-type:         Simple
 category:           Game
-synopsis:           Advent of Code 2023
-description:        My solutions for the Advent of Code 2023
+synopsis:           Advent of Code 2024
+description:        My solutions for the Advent of Code 2024
 
 source-repository head
     type:     git
@@ -32,7 +32,8 @@ common ghc_options
                       containers       ^>= 0.6,
                       vector           ^>= 0.13,
                       deepseq          ^>= 1.4,
-                      transformers     ^>= 0.6
+                      transformers     ^>= 0.6,
+                      array            ^>= 0.5
 
 library
     import:           ghc_options
@@ -66,7 +67,7 @@ library
                       Day25,
     hs-source-dirs:   src
 
-executable aoc2023
+executable aoc2024
     import:           ghc_options
     ghc-options:      -O2 -threaded -with-rtsopts=-N
     main-is:          Main.hs
