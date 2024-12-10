@@ -31,7 +31,8 @@ common ghc_options
                       template-haskell ^>= 2.20,
                       containers       ^>= 0.6,
                       vector           ^>= 0.13,
-                      deepseq          ^>= 1.4
+                      deepseq          ^>= 1.4,
+                      transformers     ^>= 0.6
 
 library
     import:           ghc_options
