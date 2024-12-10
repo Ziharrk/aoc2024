@@ -20,19 +20,19 @@ antinode1 :: ((Int, Int), (Int, Int)) -> [(Int, Int)]
 antinode1 ((x1, y1), (x2, y2)) = [(x1 + dx, y1 + dy), (x2 - dx, y2 - dy)]
   where (dx, dy) = (x1 - x2, y1 - y2)
 
-antinode2 :: (Int, Int) -> ((Int, Int), (Int, Int)) -> [(Int, Int)] 
-antinode2 (maxX, maxY) ((x1, y1), (x2, y2)) = (x1, y1) : 
-  unfoldr (generateNext (both negate d)) (x1, y1) ++ 
+antinode2 :: (Int, Int) -> ((Int, Int), (Int, Int)) -> [(Int, Int)]
+antinode2 (maxX, maxY) ((x1, y1), (x2, y2)) = (x1, y1) :
+  unfoldr (generateNext (both negate d)) (x1, y1) ++
   unfoldr (generateNext d) (x1, y1)
-  where 
+  where
     d = (x1 - x2, y1 - y2)
     generateNext (dx, dy) (x, y)
         | let (x', y') = (x + dx, y + dy),
-          x' >= 0, y' >= 0, 
+          x' >= 0, y' >= 0,
           x' < maxX, y' < maxY = Just ((x', y'), (x', y'))
         | otherwise            = Nothing
 
-countPeaks :: Matrix Char -> Int 
+countPeaks :: Matrix Char -> Int
 countPeaks = V.sum . V.map (V.length . V.filter (== '#'))
 
 day8 :: IO ()
