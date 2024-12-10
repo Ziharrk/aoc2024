@@ -1,7 +1,6 @@
+{-# LANGUAGE LambdaCase #-}
 module Day9 where
 
-import Data.List (isPrefixOf)
-import Data.Maybe (fromMaybe)
 import qualified Data.Map as Map
 
 compactBlock :: [Int] -> [Int]
@@ -18,35 +17,44 @@ compactBlock xs' = go1 0 xs' filler
     go2 _ [] _ = []
 
 compactFile :: [Int] -> [Int]
-compactFile xs' = foldr ((:) . fromMaybe 0) [] $ snd $
-  iterateUntil (moveOne blocks) (Map.size blocks - 1, expanded)
+compactFile xs' = expand $ snd $
+  iterateUntil (moveOne blocks) (Map.size blocks - 1, gathered)
   where
-    (blocks, expanded) = expand 0 xs'
+    (blocks, gathered) = gather 0 xs'
     iterateUntil f e = case f e of
       Nothing -> e
       Just e' -> iterateUntil f e'
     moveOne _ (0, _) = Nothing
     moveOne m (n, s) = case Map.lookup n m of
       Nothing   -> error $ "invalid block ID: " ++ show n
-      Just size -> Just (pred n, fitIn s (replicate size Nothing) size n)
-    fitIn [] _ _ _ = []
-    fitIn s@(Just n':_) _ _    n
-      | n' == n             = s
-    fitIn s@(f:rest) what size n
-      | what `isPrefixOf` s = replicate size (Just n) ++ replaced
-      | otherwise           = f : fitIn rest what size n
+      Just size -> Just (pred n, fitIn s size n)
+    fitIn [] _ _ = []
+    fitIn s@(v@(Right (n',_)) : rest) size n
+      | n' == n   = s
+      | otherwise = v : fitIn rest size n
+    fitIn (v@(Left size')      : rest) size n
+      | size' == size = Right (n, size) : foldr replace [] rest
+      | size' >= size = Right (n, size) : Left (size'-size) : foldr replace [] rest
+      | otherwise = v : fitIn rest size n
       where
-        replaced = map (\e -> if e == Just n then Nothing else e) (drop size s)
-    expand _     []       = (Map.empty, [])
-    expand block [x]      = (Map.singleton block x, replicate x (Just block))
-    expand block (x:y:ys) = (Map.insert block x m',
-      replicate x (Just block) ++ replicate y Nothing ++ s')
+        replace (Right (w, s')) xs | w == n = Left s' <:> xs
+        replace e xs = e <:> xs
+        Left s1 <:> (Left s2 : xs) = Left (s1 + s2) : xs
+        x <:> xs = x : xs
+    gather _     []       = (Map.empty, [])
+    gather block [x]      = (Map.singleton block x, [Right (block, x)])
+    gather block (x:y:ys) = (Map.insert block x m',
+      Right (block,x) : Left y : s')
       where
-        (m', s') = expand (succ block) ys
+        (m', s') = gather (succ block) ys
+    expand = concatMap $ \case
+      Left n       -> replicate n 0
+      Right (v, n) -> replicate n v
 
 checksum :: [Int] -> Int
 checksum xs = sum (zipWith (*) xs [0 ..])
 
+-- >>> day9
 day9 :: IO ()
 day9 = do
   input <- map (read . return) . init <$> readFile "input/day9"
