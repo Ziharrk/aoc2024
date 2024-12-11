@@ -54,9 +54,10 @@ compactFile xs' = expand $ snd $
 checksum :: [Int] -> Int
 checksum xs = sum (zipWith (*) xs [0 ..])
 
--- >>> day9
 day9 :: IO ()
 day9 = do
   input <- map (read . return) . init <$> readFile "input/day9"
+  putStr "Part 1: "
   print (checksum (compactBlock input))
+  putStr "Part 2: "
   print (checksum (compactFile input))
