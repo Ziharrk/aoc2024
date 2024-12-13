@@ -15,12 +15,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - uses: haskell-actions/setup@v2
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Setup Haskell
+      uses: haskell-actions/setup@v2
       with:
         ghc-version: '9.6.6'
         cabal-version: '3.12'
-
+        
+    - name: Setup Z3
+      id: z3
+      uses: cda-tum/setup-z3@v1
+      
     - name: Cache
       uses: actions/cache@v3
       env:
@@ -35,7 +41,6 @@ jobs:
 
     - name: Install dependencies
       run: |
-        apt get install z3 libz3-dev
         cabal update
         cabal build --only-dependencies --enable-tests
     - name: Build
