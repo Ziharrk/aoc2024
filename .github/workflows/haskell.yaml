@@ -35,6 +35,7 @@ jobs:
 
     - name: Install dependencies
       run: |
+        apt get install z3 libz3-dev
         cabal update
         cabal build --only-dependencies --enable-tests
     - name: Build
