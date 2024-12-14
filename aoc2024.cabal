@@ -34,7 +34,8 @@ common ghc_options
                       deepseq          ^>= 1.4,
                       transformers     ^>= 0.6,
                       array            ^>= 0.5,
-                      sbv
+                      sbv              ^>= 10.12,
+                      JuicyPixels      ^>= 3.3.9
 
 library
     import:           ghc_options
