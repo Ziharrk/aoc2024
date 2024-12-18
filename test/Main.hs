@@ -8,10 +8,13 @@ import Data.Time.Calendar.OrdinalDate ( toOrdinalDate )
 import AllDays (allDays)
 
 main :: IO ()
-main = getDays >>= zipWithM_ printDay [1..]
+main = do
+  t1 <- systemToUTCTime <$> getSystemTime
+  getDays t1 >>= zipWithM_ printDay [1..]
+  t2 <- systemToUTCTime <$> getSystemTime
+  putStrLn $ "Sum of all: " ++ show (diffUTCTime t2 t1)
   where
-    getDays = do
-      t <- systemToUTCTime <$> getSystemTime
+    getDays t = do
       let (year, day) = toOrdinalDate (utctDay t)
       if year <= 2024
         then return $ take (day - 334) allDays
