@@ -7,7 +7,7 @@ import qualified Data.Vector as V
 import Utils (Matrix, setMatrix, getMatrix, findMatrix, parMap)
 
 data Dir = N | E | S | W
-  deriving (Eq, Ord, Enum)
+  deriving (Eq, Ord, Enum, Show)
 
 fillPath :: Matrix Char -> (Dir, Int, Int) -> (Matrix Char, Bool)
 fillPath = fillPath' Set.empty
