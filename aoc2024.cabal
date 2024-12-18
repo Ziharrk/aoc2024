@@ -24,18 +24,19 @@ common ghc_options
                       OverloadedRecordDot,
                       TemplateHaskell,
                       TypeFamilies,
-    build-depends:    base             ^>= 4.18,
-                      parsec           ^>= 3.1,
-                      text             ^>= 2.1,
-                      extra            ^>= 1.8,
-                      template-haskell ^>= 2.20,
-                      containers       ^>= 0.6,
-                      vector           ^>= 0.13,
-                      deepseq          ^>= 1.4,
-                      transformers     ^>= 0.6,
-                      array            ^>= 0.5,
-                      sbv              ^>= 10.12,
-                      JuicyPixels      ^>= 3.3.9
+    build-depends:    base              ^>= 4.18,
+                      parsec            ^>= 3.1,
+                      text              ^>= 2.1,
+                      extra             ^>= 1.8,
+                      template-haskell  ^>= 2.20,
+                      containers        ^>= 0.6,
+                      vector            ^>= 0.13,
+                      deepseq           ^>= 1.4,
+                      transformers      ^>= 0.6,
+                      array             ^>= 0.5,
+                      search-algorithms ^>= 0.3,
+                      sbv               ^>= 10.12,
+                      JuicyPixels       ^>= 3.3.9
 
 library
     import:           ghc_options
