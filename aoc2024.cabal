@@ -35,6 +35,7 @@ common ghc_options
                       transformers      ^>= 0.6,
                       array             ^>= 0.5,
                       search-algorithms ^>= 0.3,
+                      maximal-cliques,
                       sbv               ^>= 10.12,
                       JuicyPixels       ^>= 3.3.9
 
