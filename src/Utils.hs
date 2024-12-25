@@ -67,7 +67,8 @@ modifyMatrix v f x y = case getMatrix v x y of
 parMap :: NFData b => (a -> b) -> [a] -> IO [b]
 parMap f xs = do
   num <- getNumCapabilities
-  vs <- mapM go (chunksOf (length xs `div` num) xs)
+  let c = max 1 (length xs `div` num)
+  vs <- mapM go (chunksOf c xs)
   concat <$> mapM readMVar vs
   where
     go x = do
