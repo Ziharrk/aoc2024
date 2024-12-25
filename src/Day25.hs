@@ -18,7 +18,9 @@ day25 = do
   let schematics = wordsBy null input
   let (locks, keys) = partition classify schematics
   let (lockProfiles, keyProfiles) = (map getProfile locks, map (getProfile . reverse) keys)
+  putStr "Part 1: "
   print (lockProfiles, keyProfiles)
+  putStr "Part 2: "
   print (length $ filter (uncurry fits) $ allCombinations lockProfiles keyProfiles)
 
 allCombinations :: [a] -> [b] -> [(a, b)]
