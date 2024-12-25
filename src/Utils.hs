@@ -1,25 +1,28 @@
 module Utils
   ( scc
-  , Matrix, setMatrix, setMatrixSafe, getMatrix, findMatrix
-  , parMap, parMapM
+  , Matrix, setMatrix, setMatrixSafe, getMatrix, findMatrix, modifyMatrix
+  , parMap, parMapM, parFind
   , allPairs)
   where
 
-import Control.Concurrent (forkIO, newEmptyMVar, readMVar, putMVar, getNumCapabilities)
+import Control.Concurrent ( forkIO, newEmptyMVar, readMVar, putMVar
+                          , getNumCapabilities, newMVar, modifyMVar )
 import Control.DeepSeq (force, NFData)
+import Control.Monad (replicateM_)
 import qualified Data.Set as Set
+import Data.List.Extra (chunksOf, tails)
 import Data.Vector (Vector)
 import qualified Data.Vector as V
-import Data.List.Extra (chunksOf, tails)
 
 -- Adapted from curry-frontend, with code deduplication
 scc :: Eq b => (a -> [b]) -- ^entities defined by node
             -> (a -> [b]) -- ^entities used by node
             -> [a]        -- ^list of nodes
             -> [[a]]      -- ^strongly connected components
-scc bvs' fvs' = map (map node) . tsortWith bvs fvs (const []) (\x y z -> (x : concat z) : y)
-                               . tsortWith fvs bvs id         (\x _ z -> x : z)
-                               . zipWith wrap [0 ..]
+scc bvs' fvs' = map (map node)
+  . tsortWith bvs fvs (const []) (\x y z -> (x : concat z) : y)
+  . tsortWith fvs bvs id         (\x _ z -> x : z)
+  . zipWith wrap [0 ..]
   where
     wrap i n = Node i (bvs' n) (fvs' n) n
     tsortWith which others f g xs = snd (dfs xs Set.empty []) where
@@ -56,6 +59,11 @@ getMatrix v x y = (v V.!? x) >>= (V.!? y)
 findMatrix :: (a -> Bool) -> Matrix a -> [(Int, Int)]
 findMatrix p = concat . V.toList . V.imap (\i v -> (i,) <$> V.toList (V.findIndices p v))
 
+modifyMatrix :: Matrix a -> (a -> a) -> Int -> Int -> Matrix a
+modifyMatrix v f x y = case getMatrix v x y of
+  Just a  -> setMatrix v (f a) x y
+  Nothing -> v
+
 parMap :: NFData b => (a -> b) -> [a] -> IO [b]
 parMap f xs = do
   num <- getNumCapabilities
@@ -66,6 +74,26 @@ parMap f xs = do
       v <- newEmptyMVar
       _ <- forkIO $ putMVar v $! force (map f x)
       return v
+
+parFind :: NFData a => (a -> Bool) -> [a] -> IO a
+parFind p as = do
+  num <- getNumCapabilities
+  v <- newMVar as
+  rV <- newEmptyMVar
+  let go = do
+        as' <- modifyMVar v listView
+        case filter p as' of
+          (a:_) -> putMVar rV a
+          _     -> go
+  replicateM_ num (forkIO go)
+  res <- readMVar rV
+  modifyMVar v (const (return ([], ())))
+  return res
+  where
+    listView [] = error "parFind: no result"
+    listView xs =
+      let (s,e) = splitAt 100 xs
+      in return (e, s)
 
 parMapM :: NFData b => (a -> IO b) -> [a] -> IO [b]
 parMapM f xs = do
