@@ -19,9 +19,8 @@ day25 = do
   let (locks, keys) = partition classify schematics
   let (lockProfiles, keyProfiles) = (map getProfile locks, map (getProfile . reverse) keys)
   putStr "Part 1: "
-  print (lockProfiles, keyProfiles)
-  putStr "Part 2: "
   print (length $ filter (uncurry fits) $ allCombinations lockProfiles keyProfiles)
+  putStrLn "No Part 2 on day 25"
 
 allCombinations :: [a] -> [b] -> [(a, b)]
 allCombinations xs ys = [(x, y) | x <- xs, y <- ys]
