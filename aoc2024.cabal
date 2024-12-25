@@ -36,6 +36,7 @@ common ghc_options
                       array             ^>= 0.5,
                       search-algorithms ^>= 0.3,
                       pqueue            ^>= 1.5,
+                      maximal-cliques   ^>= 0.1,
                       sbv               ^>= 10.12,
                       JuicyPixels       ^>= 3.3.9
 
