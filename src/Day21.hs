@@ -61,11 +61,17 @@ getCodeLength depthMap depth code =
 getAtDepth :: Map (Char, Char, Int) Int -> Int -> Char -> Char -> Int
 getAtDepth m d f t = m Map.! (f, t, d)
 
+getRes :: Map (Char, Char, Int) Int -> [[Char]] -> [Int] -> Int -> Int
+getRes depthMap input input' n =
+  sum $ zipWith (*) input' $ map (getCodeLength depthMap n ) input
+
 day21 :: IO ()
 day21 = do
   input <- lines <$> readFile "input/day21"
   let read'  = read . dropWhile (=='0') . take 3
       input' = map read' input
       depthMap = allPathsWithDepth 25
-  print (sum $ zipWith (*) input' $ map (getCodeLength depthMap 2 ) input)
-  print (sum $ zipWith (*) input' $ map (getCodeLength depthMap 25) input)
+  putStr "Part 1: "
+  print (getRes depthMap input input' 2)
+  putStr "Part 2: "
+  print (getRes depthMap input input' 25)
